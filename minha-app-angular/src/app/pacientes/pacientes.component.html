@@ -1,0 +1,92 @@
+<div class="pacientes-container">
+  <div class="pacientes-card">
+    <div class="header">
+      <h1>Gestão de Pacientes</h1>
+      <p>Lista e busca de pacientes cadastrados</p>
+    </div>
+
+    <!-- Barra de busca -->
+    <div class="search-bar">
+      <div class="search-input-group">
+        <input 
+          type="number" 
+          [(ngModel)]="searchId" 
+          placeholder="Digite o ID do paciente..."
+          class="search-input"
+          (keyup.enter)="buscarPacientePorId()"
+        >
+        <button 
+          (click)="buscarPacientePorId()" 
+          class="btn btn-search"
+          [disabled]="carregando"
+        >
+          Buscar
+        </button>
+        <button 
+          (click)="limparBusca()" 
+          class="btn btn-clear"
+          [disabled]="carregando"
+        >
+          Limpar
+        </button>
+      </div>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="carregando" class="loading">
+      <div class="spinner"></div>
+      <p>Carregando pacientes...</p>
+    </div>
+
+    <!-- Erro -->
+    <div *ngIf="erro && !carregando" class="error-message">
+      ⚠️ {{ erro }}
+      <button (click)="buscarPacientes()" class="btn btn-retry">
+        Tentar novamente
+      </button>
+    </div>
+
+    <!-- Tabela de Pacientes -->
+    <div *ngIf="!carregando && !erro && pacientes.length > 0" class="table-container">
+      <table class="pacientes-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nome do Paciente</th>
+            <th>Plano de Saúde</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let paciente of pacientes; trackBy: trackByPacienteId" class="table-row">
+            <td class="id-cell">{{ paciente.id }}</td>
+            <td class="nome-cell">
+              <div class="patient-info">
+                <span class="patient-name">{{ paciente.nomePaciente }}</span>
+              </div>
+            </td>
+            <td class="plano-cell">
+              <span class="plano-badge">{{ paciente.planoDeSaude }}</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Mensagem quando não há pacientes -->
+    <div *ngIf="!carregando && !erro && pacientes.length === 0" class="empty-state">
+      <div class="empty-icon"></div>
+      <h3>Nenhum paciente encontrado</h3>
+      <p>Não há pacientes para exibir no momento.</p>
+      <button (click)="buscarPacientes()" class="btn btn-primary">
+        Recarregar Lista
+      </button>
+    </div>
+
+    <!-- Rodapé com informações -->
+    <div *ngIf="pacientes.length > 0" class="footer-info">
+      <span class="result-count">
+        {{ pacientes.length }} paciente(s) encontrado(s)
+      </span>
+    </div>
+  </div>
+</div>
